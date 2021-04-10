@@ -5,7 +5,9 @@ Hypixel Skyblock is a economy based game.
 It uses the auction house for trading small amount of items like weapons, armor, etc.
 It also uses the bazaar for trading large amounts of items like ores, crops, enemy drops, etc.
 Skyblock is also skill based, meaning fighting enemies, mining ores, farming crops, enchanting items increase levels.  
-The goal of the game is too beat all of the mobs in the game and to max out all of your skills.
+The goal of the game is too beat all of the mobs in the game and to max out all of your skills.  
+This means you want all of the best gear, so you need money to buy the gear or you need to get the gear normally.  
+Usually its easier to just buy the gear, you want a fast method to make money, which will be talked about in the next section.
 
 # MoneyMakingMaker
 
