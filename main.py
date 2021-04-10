@@ -140,7 +140,7 @@ class MoneyMakingMaker(discord.Client):
                                               "name"],
                                     inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
-            if cmd == 'bits':
+            if cmd == 'bit':
                 message.reply("Working on it")
                 bits = 50000
                 if len(ins) >= 2:
