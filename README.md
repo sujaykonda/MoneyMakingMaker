@@ -23,7 +23,9 @@ There are 3 types of flipping in the game,
 ## Margins
 There are two types of margins. Percentage margins and normal margins. Margins is the difference in price when you flip. For example the normal margins in BIN Flipping is the difference of the lowest bin to the second lowest bin. The normal margins in Bazaar Flipping is the difference between the buy order price and the sell order price. Flipping is all about the margins. Since the margins is essentially how much you will make, people usually care about normal margins. There is also percent margins. This is the percentage of the normal margin to the buy price. This also matters because if you flip alot of the same item which a high percent margin you can essentially multiply your money by the percent margin.
 
-### The Problem: Find Good Flipping Oppurtunities
+## The Problem: Find Good Flipping Oppurtunities
+Good means that you are maximizing the profit per minute. The factors in maximizing the profit per minute is the demand at the sell price and the margin.
+
 
 ## How To Find Flipping Oppurtunities
 Instead of looking through it, we used the hypixel api, which is a api in json form that looks like this:  
