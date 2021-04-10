@@ -42,10 +42,12 @@ def process_json(json_data):
             i += 1
             c = raw_nbt_data[i]
 
+        num_enchants = auction["extra"][len(auction["item_name"]):].split(" ")
+
         if "bin" in auction and item_id not in blacklist:
             if item_id not in bin_prices:
                 bin_prices[item_id] = []
-            bin_prices[item_id].append((auction["auctioneer"], price))
+            bin_prices[item_id].append((auction["auctioneer"], price, num_enchants))
 
     return bin_prices
 
@@ -69,10 +71,11 @@ def bin_flip(budget, item_limit):
     best_flip = {}
     for key in bin_prices.keys():
         bin_prices[key] = sorted(bin_prices[key], key=lambda row: row[1])
-        if len(bin_prices[key]) >= item_limit and bin_prices[key][0][1] < budget:
-            sold = 1
-            profit = bin_prices[key][1][1] - bin_prices[key][0][1] * 0.99
-            best_flip[(key, bin_prices[key][0][0], profit)] = profit * sold**0.05
+        if len(bin_prices[key]) >= item_limit:
+            profit = bin_prices[key][1][1] * 0.99 - bin_prices[key][0][1]
+            if bin_prices[key][0][1] < budget and bin_prices[key][0][2] <= bin_prices[key][1][2] and profit > 20000:
+                sold = requests.get("https://api.slothpixel.me/api/skyblock/auctions/" + key + "?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5&&from=now-31d&&to=now-30d").json()["sold"]/8
+                best_flip[(key, bin_prices[key][0][0], profit)] = profit * (sold**0.5)
 
     counter = collections.Counter(best_flip)
 

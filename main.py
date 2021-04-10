@@ -74,7 +74,7 @@ class MoneyMakingMaker(discord.Client):
                                 value="Finds the top 5 best auctions flips",
                                 inline=False)
             if cmd == 'farming':
-                message.reply("Working on it")
+                await message.reply("Working on it")
                 farming_level = 0
                 if len(ins) >= 2:
                     farming_level = ston(ins[1])
@@ -88,7 +88,7 @@ class MoneyMakingMaker(discord.Client):
 
                 await MoneyMakingMaker.dm(message.author, reply)
             if cmd == 'bzf':
-                message.reply("Working on it")
+                await message.reply("Working on it")
                 budget = 1000000
                 if len(ins) >= 2:
                     budget = ston(ins[1])
@@ -102,7 +102,7 @@ class MoneyMakingMaker(discord.Client):
                                     inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
             if cmd == 'bf':
-                message.reply("Working on it")
+                await message.reply("Working on it")
                 item_limit = 20
                 budget = 1000000
                 if len(ins) >= 2:
@@ -122,7 +122,7 @@ class MoneyMakingMaker(discord.Client):
                                     inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
             if cmd == 'af':
-                message.reply("Working on it")
+                await message.reply("Working on it")
                 item_limit = 20
                 budget = 1000000
                 if len(ins) >= 2:
