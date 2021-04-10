@@ -28,7 +28,7 @@ def coin_per_bits():
         "speed enrichment": ["TALISMAN_ENRICHMENT_WALK_SPEED", 5000],
         "intelligence enrichment": ["TALISMAN_ENRICHMENT_INTELLIGENCE", 5000],
         "critical chance enrichment": ["TALISMAN_ENRICHMENT_CRITICAL_CHANCE", 5000],
-        "critical damage": ["TALISMAN_ENRICHMENT_CRITICAL_DAMAGE", 5000],
+        "critical damage enrichment": ["TALISMAN_ENRICHMENT_CRITICAL_DAMAGE", 5000],
         "strength enrichment": ["TALISMAN_ENRICHMENT_STRENGTH", 5000],
         "defense enrichment": ["TALISMAN_ENRICHMENT_DEFENSE", 5000],
         "health enrichment": ["TALISMAN_ENRICHMENT_HEALTH", 5000],
