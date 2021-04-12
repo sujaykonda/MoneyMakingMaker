@@ -7,7 +7,66 @@ import dask.bag as db
 import requests
 import json
 
+
+def process_json(json_data):
+    bin_prices = {}
+
+    auctions = json_data["auctions"]
+    for auction in auctions:
+        price = auction["starting_bid"]
+        if price < auction["highest_bid_amount"]:
+            price = auction["highest_bid_amount"]
+
+        item_id = ""
+
+        raw_nbt_data = gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(auction["item_bytes"]))).read().decode(
+            "ISO-8859-1")
+
+        field = ""
+        i = len(raw_nbt_data) - 1
+        while True:
+            if raw_nbt_data[i] < ' ':
+                if field == "di":
+                    break
+                field = ""
+            else:
+                field += raw_nbt_data[i]
+
+            i -= 1
+        i += 5
+        c = raw_nbt_data[i]
+        while ord(c) >= 20:
+            item_id += c
+            i += 1
+            c = raw_nbt_data[i]
+
+        if "bin" in auction:
+            if item_id not in bin_prices:
+                bin_prices[item_id] = price
+            if price > bin_prices[item_id]:
+                bin_prices[item_id] = price
+
+    return bin_prices
+
+
 def coin_per_bits():
+    total_pages = \
+        requests.get("https://api.hypixel.net/skyblock/auctions?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5").json()[
+            "totalPages"]
+    urls = []
+    for page in range(total_pages):
+        urls.append(
+            "https://api.hypixel.net/skyblock/auctions?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5&&page=" + str(page))
+
+    datas = db.read_text(urls).map(json.loads).map(process_json).compute()
+    prices = {}
+    for data in datas:
+        for key in data.keys():
+            if key not in prices:
+                prices[key] = data[key]
+            if prices[key] > data[key]:
+                prices[key] = data[key]
+    print(prices)
     bitcost = {
         "god potion": ["GOD_POTION", 1500],
         "kat flower": ["KAT_FLOWER", 500],

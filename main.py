@@ -1,10 +1,19 @@
 from dask.distributed import Client, progress
 import sys
 import discord
+import json
+
+f = open('e.json', )
+e = json.load(f)
+f.close()
+
 from bin import *
 from auction import *
 from bazaar import *
 from farming import *
+
+import threading
+import asyncio
 
 
 def ston(string):
@@ -52,6 +61,9 @@ class MoneyMakingMaker(discord.Client):
         await author.dm_channel.send(embed=embed)
 
     async def on_message(self, message):
+        task = asyncio.create_task(self.message_handler(message))
+
+    async def message_handler(self, message):
         # we do not want the bot to reply to itself
         if message.author.id == self.user.id:
             return
@@ -73,8 +85,10 @@ class MoneyMakingMaker(discord.Client):
                 reply.add_field(name="m!af",
                                 value="Finds the top 5 best auctions flips",
                                 inline=False)
+                await message.reply(embed=reply, mention_author=False)
             if cmd == 'farming':
-                await message.reply("Working on it")
+                print("FARMING CALLED")
+                await message.reply("Working on it", mention_author=False)
                 farming_level = 0
                 if len(ins) >= 2:
                     farming_level = ston(ins[1])
@@ -88,7 +102,8 @@ class MoneyMakingMaker(discord.Client):
 
                 await MoneyMakingMaker.dm(message.author, reply)
             if cmd == 'bzf':
-                await message.reply("Working on it")
+                print("BAZAAR FLIP CALLED")
+                await message.reply("Working on it", mention_author=False)
                 budget = 1000000
                 if len(ins) >= 2:
                     budget = ston(ins[1])
@@ -96,34 +111,42 @@ class MoneyMakingMaker(discord.Client):
                 flips = bazaar_flip(budget)
                 reply = discord.Embed(color=discord.Color.green())
                 for i in range(len(flips)):
-                    reply.add_field(name="Flip " + str(i+1),
+                    reply.add_field(name="Flip " + str(i + 1),
                                     value="Item: " + str(flips[i][0]) +
                                           "\nProfit Per Min: " + ntos(flips[i][1]),
                                     inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
             if cmd == 'bf':
-                await message.reply("Working on it")
-                item_limit = 20
+                print("BIN FLIP CALLED")
+                await message.reply("Working on it", mention_author=False)
+                risk_factor = 1
                 budget = 1000000
                 if len(ins) >= 2:
                     budget = ston(ins[1])
                 if len(ins) >= 3:
-                    item_limit = ston(ins[2])
+                    if float(ins[2]) > 1:
+                        await message.reply("THIS NUMBER HAS CHANGED, USE 0 TO 1\n This number is now the profit to demand factor.\n The closer to one, the more demand matters", mention_author=False)
+                    else:
+                        risk_factor = float(ins[2])
 
-                flips = bin_flip(budget, item_limit)
+                flips = bin_flip(budget, risk_factor)
                 reply = discord.Embed(color=discord.Color.green())
                 for i in range(len(flips)):
-                    reply.add_field(name="Flip " + str(i+1),
+                    reply.add_field(name="Flip " + str(i + 1),
                                     value="Item: " + str(flips[i][0][0]) +
-                                          "\nProfit: " + ntos(flips[i][0][2]) +
+                                          "\nBuying: " + ntos(flips[i][0][2]) +
+                                          "\nSelling: " + ntos(flips[i][0][3]) +
+                                          "\nProfit: " + ntos(flips[i][0][4]) +
+                                          "\nSelling Time: " + str(1 / max(flips[i][0][5], 0.0001)) + " min" +
                                           "\n/ah " + requests.get(
                                         "https://api.mojang.com/user/profiles/" + flips[i][0][1] + "/names").json()[-1][
-                                              "name"],
+                                              "name"].replace("_", "\_"),
                                     inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
             if cmd == 'af':
-                await message.reply("Working on it")
-                item_limit = 20
+                print("AUCTION FLIP CALLED")
+                await message.reply("Working on it", mention_author=False)
+                item_limit = 2
                 budget = 1000000
                 if len(ins) >= 2:
                     budget = ston(ins[1])
@@ -132,16 +155,18 @@ class MoneyMakingMaker(discord.Client):
                 flips = auction_flip(budget, item_limit)
                 reply = discord.Embed(color=discord.Color.green())
                 for i in range(len(flips)):
-                    reply.add_field(name="Flip " + str(i+1),
+                    reply.add_field(name="Flip " + str(i + 1),
                                     value="Item: " + str(flips[i][0][0]) +
-                                          "\nProfit: " + ntos(flips[i][0][2]) +
+                                          "\nBuying: " + ntos(flips[i][0][2]) +
+                                          "\nSelling: " + ntos(flips[i][0][3]) +
+                                          "\nProfit: " + ntos(flips[i][0][4]) +
                                           "\n/ah " + requests.get(
                                         "https://api.mojang.com/user/profiles/" + flips[i][0][1] + "/names").json()[-1][
                                               "name"],
                                     inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
             if cmd == 'bit':
-                message.reply("Working on it")
+                message.reply("Working on it", mention_author=False)
                 bits = 50000
                 if len(ins) >= 2:
                     bits = ston(ins[1])

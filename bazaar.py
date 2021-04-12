@@ -1,6 +1,7 @@
 import collections
 
 import requests
+from main import e
 
 
 def bazaar_flip(budget):
@@ -13,8 +14,8 @@ def bazaar_flip(budget):
 
             margin = sell_price - buy_price
             demand = bazaar_data[product_id]["quick_status"]["sellMovingWeek"]/7/24/60
-            demand -= margin/500
-            demand /= (margin/buy_price + 1)**0.7
+            demand *= (buy_price**e["bazaar"])/(sell_price**e["bazaar"])
+            #demand /= (margin/buy_price + 1)**0.7
             profit_per_min = margin * demand
             profits[product_id] = profit_per_min
 

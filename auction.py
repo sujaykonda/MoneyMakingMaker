@@ -8,6 +8,8 @@ import requests
 import json
 import time
 
+from main import e
+
 blacklist = {"ENCHANTED_BOOK", "PET", "RUNE", "NEW_YEAR_CAKE"}
 
 
@@ -84,9 +86,8 @@ def auction_flip(budget, item_limit):
             if key in bin_prices and bin_prices[key][1] >= item_limit:
                 for i in range(len(new_auction_prices[key])):
                     if new_auction_prices[key][i][1] < budget:
-                        sold = 1
-                        profit = bin_prices[key][0] - new_auction_prices[key][i][1] * 0.99
-                        best_flip[(key, new_auction_prices[key][i][0], profit)] = profit * sold**0.05
+                        profit = bin_prices[key][0] * 0.99 - new_auction_prices[key][i][1]
+                        best_flip[(key, new_auction_prices[key][i][0], new_auction_prices[key][i][1], bin_prices[key][0], profit)] = profit
     counter = collections.Counter(best_flip)
 
-    return counter.most_common(5)
+    return counter.most_common(15)

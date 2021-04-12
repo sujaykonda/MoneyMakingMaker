@@ -2,13 +2,16 @@ import base64
 import collections
 import gzip
 import io
+import time
 
 import dask.bag as db
 import requests
 import json
 
+from main import e
 
-blacklist = {"ENCHANTED_BOOK", "PET", "RUNE", "NEW_YEAR_CAKE"}
+
+blacklist = {"ENCHANTED_BOOK", "PET", "RUNE", "NEW_YEAR_CAKE", "CAKE_SOUL"}
 
 
 def process_json(json_data):
@@ -44,15 +47,15 @@ def process_json(json_data):
 
         num_enchants = auction["extra"][len(auction["item_name"]):].split(" ")
 
-        if "bin" in auction and item_id not in blacklist:
+        if "bin" in auction and item_id not in blacklist and not auction["claimed"] and time.time() * 1000 + 60000 < auction["end"]:
             if item_id not in bin_prices:
                 bin_prices[item_id] = []
-            bin_prices[item_id].append((auction["auctioneer"], price, num_enchants))
+            bin_prices[item_id].append((auction["auctioneer"], price, num_enchants, auction["category"]))
 
     return bin_prices
 
 
-def bin_flip(budget, item_limit):
+def bin_flip(budget, profit_risk_factor):
     total_pages = \
         requests.get("https://api.hypixel.net/skyblock/auctions?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5").json()[
             "totalPages"]
@@ -71,11 +74,16 @@ def bin_flip(budget, item_limit):
     best_flip = {}
     for key in bin_prices.keys():
         bin_prices[key] = sorted(bin_prices[key], key=lambda row: row[1])
-        if len(bin_prices[key]) >= item_limit:
-            profit = bin_prices[key][1][1] * 0.99 - bin_prices[key][0][1]
+        if len(bin_prices[key]) >= 2:
+            selling_price = bin_prices[key][1][1]
+            buying_price = bin_prices[key][0][1]
+            profit = selling_price * 0.99 - buying_price
             if bin_prices[key][0][1] < budget and bin_prices[key][0][2] <= bin_prices[key][1][2] and profit > 20000:
-                sold = requests.get("https://api.slothpixel.me/api/skyblock/auctions/" + key + "?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5&&from=now-31d&&to=now-30d").json()["sold"]/8
-                best_flip[(key, bin_prices[key][0][0], profit)] = profit * (sold**0.5)
+                past_data = requests.get("https://api.slothpixel.me/api/skyblock/auctions/" + key + "?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5&&from=now-31d&&to=now-24d").json()
+                sold = past_data["sold"]/7/24/60
+                price = past_data["lowest_bin"]
+                demand_at_selling_price = sold * (price**e[bin_prices[key][0][3]])/(selling_price**e[bin_prices[key][0][3]])
+                best_flip[(key, bin_prices[key][0][0], bin_prices[key][0][1], bin_prices[key][1][1], profit, demand_at_selling_price)] = (demand_at_selling_price**profit_risk_factor) * profit
 
     counter = collections.Counter(best_flip)
 
