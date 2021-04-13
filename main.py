@@ -11,6 +11,7 @@ from bin import *
 from auction import *
 from bazaar import *
 from farming import *
+from bits import *
 
 import threading
 import asyncio
@@ -170,6 +171,15 @@ class MoneyMakingMaker(discord.Client):
                 bits = 50000
                 if len(ins) >= 2:
                     bits = ston(ins[1])
+                bestItem = coin_per_bits();
+                reply = discord.Embed(color=discord.Color.green())
+                reply.add_field(name="Best Item",
+                                value="Item: " + str(bestItem[0]) +
+                                      "\nCoins Per Bit: " + ntos(bestItem[1]) +
+                                      "\nAuction Value" + ntos(bestItem[2]),
+                                inline=False)
+                await MoneyMakingMaker.dm(message.author, reply)
+
 
 
 if __name__ == '__main__':
