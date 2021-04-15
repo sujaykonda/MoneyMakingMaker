@@ -3,6 +3,7 @@ import collections
 import gzip
 import io
 import time
+from json import JSONDecodeError
 
 import dask.bag as db
 import requests
@@ -79,7 +80,11 @@ def bin_flip(budget, profit_risk_factor):
             buying_price = bin_prices[key][0][1]
             profit = selling_price * 0.99 - buying_price
             if bin_prices[key][0][1] < budget and bin_prices[key][0][2] <= bin_prices[key][1][2] and profit > 20000:
-                past_data = requests.get("https://api.slothpixel.me/api/skyblock/auctions/" + key + "?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5&&from=now-31d&&to=now-24d").json()
+                try:
+                    past_data = requests.get("https://api.slothpixel.me/api/skyblock/auctions/" + key + "?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5&&from=now-31d&&to=now-24d").json()
+                except JSONDecodeError:
+                    past_data = {"sold": 0, "lowest_bin": 1}
+
                 sold = past_data["sold"]/7/24/60
                 price = past_data["lowest_bin"]
                 demand_at_selling_price = sold * (price**e[bin_prices[key][0][3]])/(selling_price**e[bin_prices[key][0][3]])

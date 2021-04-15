@@ -49,7 +49,7 @@ def process_json(json_data):
     return bin_prices
 
 
-def coin_per_bits():
+def bestbits(bits):
     total_pages = \
         requests.get("https://api.hypixel.net/skyblock/auctions?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5").json()[
             "totalPages"]
@@ -66,67 +66,50 @@ def coin_per_bits():
                 prices[key] = data[key]
             if prices[key] > data[key]:
                 prices[key] = data[key]
-    print(prices)
-    bitItemCost = {
-        "god potion": ["GOD_POTION", 1500],
-        "kat flower": ["KAT_FLOWER", 500],
-        "heat core": ["HEAT_CORE", 3000],
-        "hyper catalyst upgrade": ["HYPER_CATALYST_UPGRADE", 300],
-        "ultimate carrot candy upgrade": ["ULTIMATE_CARROT_CANDY_UPGRADE", 8000],
-        "colossal exp bottle": ["COLOSSAL_EXP_BOTTLE_UPGRADE", 1200],
-        "jumbo backpack upgrade": ["JUMBO_BACKPACK_UPGRADE", 4000],
-        "minion storage expander": ["MINION_STORAGE_EXPANDER", 1500],
-        "hologram": ["HOLOGRAM", 2000],
-        "dungeon sack": ["LARGE_DUNGEON_SACK", 10000],
-        "builders wand": ["BUILDERS_WAND", 12000],
-        "block zapper": ["BLOCK_ZAPPER", 5000],
-        "bits talisman": ["BITS_TALISMAN", 15000],
-        "rune sack": ["RUNE_SACK", 10000],
-        "autopets rule": ["AUTOPET_RULES_2", 21000],
-        "kismet feather": ["KISMET_FEATHER", 1350],
-        "speed enrichment": ["TALISMAN_ENRICHMENT_WALK_SPEED", 5000],
-        "intelligence enrichment": ["TALISMAN_ENRICHMENT_INTELLIGENCE", 5000],
-        "critical chance enrichment": ["TALISMAN_ENRICHMENT_CRITICAL_CHANCE", 5000],
-        "critical damage enrichment": ["TALISMAN_ENRICHMENT_CRITICAL_DAMAGE", 5000],
-        "strength enrichment": ["TALISMAN_ENRICHMENT_STRENGTH", 5000],
-        "defense enrichment": ["TALISMAN_ENRICHMENT_DEFENSE", 5000],
-        "health enrichment": ["TALISMAN_ENRICHMENT_HEALTH", 5000],
-        "magic find enrichment": ["TALISMAN_ENRICHMENT_MAGIC_FIND", 5000],
-        "ferocity enrichment": ["TALISMAN_ENRICHMENT_FEROCITY", 5000],
-        "sea creature chance enrichment": ["TALISMAN_ENRICHMENT_SEA_CREATURE_CHANCE", 5000],
-        "enrichment swapper": ["TALISMAN_ENRICHMENT_SWAPPER", 200]
+    bitItems = {
+        "God Potion": ["GOD_POTION2", 1500],
+        "Kat Flower": ["KAT_FLOWER", 500],
+        "Heat Core": ["HEAT_CORE", 3000],
+        "Hyper Catalyst Upgrade": ["HYPER_CATALYST_UPGRADE", 300],
+        "Ultimate Carrot Candy Upgrade": ["ULTIMATE_CARROT_CANDY_UPGRADE", 8000],
+        "Colossal Exp Bottle": ["COLOSSAL_EXP_BOTTLE_UPGRADE", 1200],
+        "Jumbo Backpack Upgrade": ["JUMBO_BACKPACK_UPGRADE", 4000],
+        "Minion Storage Expander": ["MINION_STORAGE_EXPANDER", 1500],
+        "Hologram": ["HOLOGRAM", 2000],
+        "Dungeon Sack": ["LARGE_DUNGEON_SACK", 10000],
+        "Builders Wand": ["BUILDERS_WAND", 12000],
+        "Block Zapper": ["BLOCK_ZAPPER", 5000],
+        "Bits Talisman": ["BITS_TALISMAN", 15000],
+        "Rune Sack": ["RUNE_SACK", 10000],
+        "Autopets Rule": ["AUTOPET_RULES_2", 21000],
+        "Kismet Feather": ["KISMET_FEATHER", 1350],
+        "Speed Enrichment": ["TALISMAN_ENRICHMENT_WALK_SPEED", 5000],
+        "Intelligence Enrichment": ["TALISMAN_ENRICHMENT_INTELLIGENCE", 5000],
+        "Critical Chance Enrichment": ["TALISMAN_ENRICHMENT_CRITICAL_CHANCE", 5000],
+        "Critical Damage Enrichment": ["TALISMAN_ENRICHMENT_CRITICAL_DAMAGE", 5000],
+        "Strength Enrichment": ["TALISMAN_ENRICHMENT_STRENGTH", 5000],
+        "Defense Enrichment": ["TALISMAN_ENRICHMENT_DEFENSE", 5000],
+        "Health Enrichment": ["TALISMAN_ENRICHMENT_HEALTH", 5000],
+        "Magic Find Enrichment": ["TALISMAN_ENRICHMENT_MAGIC_FIND", 5000],
+        "Ferocity Enrichment": ["TALISMAN_ENRICHMENT_FEROCITY", 5000],
+        "Sea Creature Chance Enrichment": ["TALISMAN_ENRICHMENT_SEA_CREATURE_CHANCE", 5000],
+        "Enrichment swapper": ["TALISMAN_ENRICHMENT_SWAPPER", 200]
     }
-    coins_per_bit = {
-        "God potion": prices["GOD_POTION"] / 1500,
-        "Kat flower": prices["KAT_FLOWER"] / 500,
-        "Heat core": prices["HEAT_CORE"] / 3000,
-        "Hyper catalyst upgrade": prices["HYPER_CATALYST_UPGRADE"] / 300,
-        "Ultimate carrot candy upgrade": prices["ULTIMATE_CARROT_CANDY_UPGRADE"] / 8000,
-        "Colossal exp bottle": prices["COLOSSAL_EXP_BOTTLE_UPGRADE"] / 1200,
-        "Jumbo backpack upgrade": prices["JUMBO_BACKPACK_UPGRADE"] / 4000,
-        "Minion storage expander": prices["MINION_STORAGE_EXPANDER"] / 1500,
-        "Hologram": prices["HOLOGRAM"] / 2000,
-        "Dungeon sack": prices["LARGE_DUNGEON_SACK"] / 10000,
-        "Builders wand": prices["BUILDERS_WAND"] / 12000,
-        "Block zapper": prices["BLOCK_ZAPPER"] / 5000,
-        "Bits talisman": prices["BITS_TALISMAN"] / 15000,
-        "Rune sack": prices["RUNE_SACK"] / 10000,
-        "Autopets rule": prices["AUTOPET_RULES_2"] / 21000,
-        "Kismet feather": prices["KISMET_FEATHER"] / 1350,
-        "Speed enrichment": prices["TALISMAN_ENRICHMENT_WALK_SPEED"] / 5000,
-        "Intelligence enrichment": prices["TALISMAN_ENRICHMENT_INTELLIGENCE"] / 5000,
-        "Critical chance enrichment": prices["TALISMAN_ENRICHMENT_CRITICAL_CHANCE"] / 5000,
-        "Critical damage enrichment": prices["TALISMAN_ENRICHMENT_CRITICAL_DAMAGE"] / 5000,
-        "Strength enrichment": prices["TALISMAN_ENRICHMENT_STRENGTH"] / 5000,
-        "Defense enrichment": prices["TALISMAN_ENRICHMENT_DEFENSE"] / 5000,
-        "Health enrichment": prices["TALISMAN_ENRICHMENT_HEALTH"] / 5000,
-        "Magic find enrichment": prices["TALISMAN_ENRICHMENT_MAGIC_FIND"] / 5000,
-        "Ferocity enrichment": prices["TALISMAN_ENRICHMENT_FEROCITY"] / 5000,
-        "Sea creature chance enrichment": prices["TALISMAN_ENRICHMENT_SEA_CREATURE_CHANCE"] / 5000,
-        "Enrichment swapper": prices["TALISMAN_ENRICHMENT_SWAPPER"] / 200
-    }
-    best_item = "god potion";
-    for key in coins_per_bit:
-        if coins_per_bit[key] > coins_per_bit[best_item[0]]:
-            best_item = [key, coins_per_bit[key], bitItemCost[key][1]]
-    return best_item
+    items_bought = {}
+    total_profit = 0
+    while bits >= 200:
+        best_item = "god potion"
+        best_coins_per_bit = 0
+        for key in bitItems:
+            if bitItems[key][0] in prices:
+                coins_per_bits = prices[bitItems[key][0]]/bitItems[key][1]
+                if coins_per_bits > best_coins_per_bit:
+                    best_item = key
+                    best_coins_per_bit = coins_per_bits
+        if best_item not in items_bought:
+            items_bought[best_item] = 0
+        items_bought[best_item] += 1
+        total_profit += prices[bitItems[best_item][0]]
+        bits -= bitItems[best_item][1]
+        prices[bitItems[best_item][0]] *= 0.99
+    return total_profit, items_bought

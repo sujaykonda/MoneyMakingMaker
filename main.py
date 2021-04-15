@@ -62,7 +62,7 @@ class MoneyMakingMaker(discord.Client):
         await author.dm_channel.send(embed=embed)
 
     async def on_message(self, message):
-        task = asyncio.create_task(self.message_handler(message))
+        await self.message_handler(message)
 
     async def message_handler(self, message):
         # we do not want the bot to reply to itself
@@ -166,20 +166,19 @@ class MoneyMakingMaker(discord.Client):
                                               "name"],
                                     inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
-            if cmd == 'bit':
-                message.reply("Working on it", mention_author=False)
+            if cmd == 'bits':
+                await message.reply("Working on it", mention_author=False)
                 bits = 50000
                 if len(ins) >= 2:
                     bits = ston(ins[1])
-                bestItem = coin_per_bits();
+                total_profit, best_items = bestbits(bits)
                 reply = discord.Embed(color=discord.Color.green())
-                reply.add_field(name="Best Item",
-                                value="Item: " + str(bestItem[0]) +
-                                      "\nCoins Per Bit: " + ntos(bestItem[1]) +
-                                      "\nAuction Value" + ntos(bestItem[2]),
-                                inline=False)
+                reply.add_field(name="Total Profit", value=str(total_profit), inline=False)
+                for key in best_items.keys():
+                    reply.add_field(name=key,
+                                    value="Num Items: " + str(best_items[key]),
+                                    inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
-
 
 
 if __name__ == '__main__':
