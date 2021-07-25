@@ -1,11 +1,11 @@
 import collections
 
 import requests
-from main import e
+from constants import *
 
 
 def bazaar_flip(budget):
-    bazaar_data = requests.get("https://api.slothpixel.me/api/skyblock/bazaar/").json()
+    bazaar_data = requests.get("https://api.hypixel.net/skyblock/bazaar?key=60b5fe52" + KEY).json()["products"]
     profits = {}
     for product_id in bazaar_data.keys():
         if len(bazaar_data[product_id]["sell_summary"]) > 0 and len(bazaar_data[product_id]["buy_summary"]) > 0:
@@ -14,8 +14,7 @@ def bazaar_flip(budget):
 
             margin = sell_price - buy_price
             demand = bazaar_data[product_id]["quick_status"]["sellMovingWeek"]/7/24/60
-            demand *= (buy_price**e["bazaar"])/(sell_price**e["bazaar"])
-            #demand /= (margin/buy_price + 1)**0.7
+            demand *= (buy_price**0.5)/(sell_price**0.5)
             profit_per_min = margin * demand
             profits[product_id] = profit_per_min
 

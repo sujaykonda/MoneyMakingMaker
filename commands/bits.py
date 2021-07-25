@@ -6,6 +6,7 @@ import io
 import dask.bag as db
 import requests
 import json
+from main import KEY
 
 
 def process_json(json_data):
@@ -51,12 +52,12 @@ def process_json(json_data):
 
 def bestbits(bits):
     total_pages = \
-        requests.get("https://api.hypixel.net/skyblock/auctions?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5").json()[
+        requests.get("https://api.hypixel.net/skyblock/auctions?key=" + KEY).json()[
             "totalPages"]
     urls = []
     for page in range(total_pages):
         urls.append(
-            "https://api.hypixel.net/skyblock/auctions?key=60b5fe52-8f17-432d-9f90-7fa79ae63ed5&&page=" + str(page))
+            "https://api.hypixel.net/skyblock/auctions?key=" + KEY + "&&page=" + str(page))
 
     datas = db.read_text(urls).map(json.loads).map(process_json).compute()
     prices = {}
@@ -66,7 +67,7 @@ def bestbits(bits):
                 prices[key] = data[key]
             if prices[key] > data[key]:
                 prices[key] = data[key]
-    bitItems = {
+    bit_items = {
         "God Potion": ["GOD_POTION2", 1500],
         "Kat Flower": ["KAT_FLOWER", 500],
         "Heat Core": ["HEAT_CORE", 3000],
@@ -100,16 +101,16 @@ def bestbits(bits):
     while bits >= 200:
         best_item = "god potion"
         best_coins_per_bit = 0
-        for key in bitItems:
-            if bitItems[key][0] in prices:
-                coins_per_bits = prices[bitItems[key][0]]/bitItems[key][1]
+        for key in bit_items:
+            if bit_items[key][0] in prices:
+                coins_per_bits = prices[bit_items[key][0]]/bit_items[key][1]
                 if coins_per_bits > best_coins_per_bit:
                     best_item = key
                     best_coins_per_bit = coins_per_bits
         if best_item not in items_bought:
             items_bought[best_item] = 0
         items_bought[best_item] += 1
-        total_profit += prices[bitItems[best_item][0]]
-        bits -= bitItems[best_item][1]
-        prices[bitItems[best_item][0]] *= 0.99
+        total_profit += prices[bit_items[best_item][0]]
+        bits -= bit_items[best_item][1]
+        prices[bit_items[best_item][0]] *= 0.99
     return total_profit, items_bought

@@ -1,6 +1,7 @@
 import collections
 
 import requests
+from constants import *
 
 
 def farming_level_eq(level):
@@ -21,7 +22,7 @@ def farming(farming_level):
         "Cocoa Beans (Fly)":      ["ENCHANTED_COCOA",         160,       fly_speed,    100, 3, 1,    25],
         "Cocoa Beans (Semi Afk)": ["ENCHANTED_COCOA",         160,       ladder_speed, 100, 4, 1,    25],
     }
-    bazaar_data = requests.get("https://api.slothpixel.me/api/skyblock/bazaar/").json()
+    bazaar_data = requests.get("https://api.hypixel.net/skyblock/bazaar?key=" + KEY).json()["products"]
     farming_profits = {}
     for crop in crop_settings.keys():
         profit_per_item = bazaar_data[crop_settings[crop][0]]["sell_summary"][0]["pricePerUnit"] / crop_settings[crop][1]
