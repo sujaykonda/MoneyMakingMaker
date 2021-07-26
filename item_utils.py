@@ -16,7 +16,7 @@ def to_custom_item_id(auction):
     else:
         item_id = TIER_DISPLAY[auction["tier"]] + " "
     if "modifier" in nbt_string:
-        item_id += auction["item_name"][auction["item_name"].find(" "):]
+        item_id += auction["item_name"][auction["item_name"].find(" ")+1:]
     else:
         if auction["item_name"].startswith("[Lvl "):
             pet_lvl = (int("".join(filter(str.isdigit, auction["item_name"][5:]))))
@@ -38,7 +38,6 @@ def to_custom_item_id(auction):
                 rounded = "0-20"
             auction["item_name"] = auction["item_name"][:5] + str(rounded) + auction["item_name"][5+len(str(pet_lvl)):]
         item_id += auction["item_name"]
-    item_id = item_id.replace("✪", "")
     return item_id
 
 

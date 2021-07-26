@@ -1,20 +1,13 @@
-from dask.distributed import Client, progress
 import sys
+
 import discord
-import json
+from dask.distributed import Client
 
-f = open('e.json', )
-e = json.load(f)
-f.close()
-
-from bin import *
-from auction import *
-from bazaar import *
-from farming import *
-from bits import *
-
-import threading
-import asyncio
+from commands.bin import *
+from commands.auction import *
+from commands.bazaar import *
+from commands.farming import *
+from commands.bits import *
 
 
 def ston(string):
@@ -113,57 +106,48 @@ class MoneyMakingMaker(discord.Client):
                 reply = discord.Embed(color=discord.Color.green())
                 for i in range(len(flips)):
                     reply.add_field(name="Flip " + str(i + 1),
-                                    value="Item: " + str(flips[i][0]) +
-                                          "\nProfit Per Min: " + ntos(flips[i][1]),
+                                    value="Item: " + str(flips[i][0][0]) +
+                                          "\nBuy Price: " + ntos(flips[i][0][1]) +
+                                          "\nSell Price: " + ntos(flips[i][0][2]) +
+                                          "\nMax Sold Per Min: " + ntos(flips[i][0][3]) +
+                                          "\nMax Profit Per Min: " + ntos(flips[i][1]),
                                     inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
             if cmd == 'bf':
                 print("BIN FLIP CALLED")
                 await message.reply("Working on it", mention_author=False)
-                risk_factor = 1
                 budget = 1000000
                 if len(ins) >= 2:
                     budget = ston(ins[1])
-                if len(ins) >= 3:
-                    if float(ins[2]) > 1:
-                        await message.reply("THIS NUMBER HAS CHANGED, USE 0 TO 1\n This number is now the profit to demand factor.\n The closer to one, the more demand matters", mention_author=False)
-                    else:
-                        risk_factor = float(ins[2])
 
-                flips = bin_flip(budget, risk_factor)
+                flips = bin_flip(budget)
                 reply = discord.Embed(color=discord.Color.green())
-                for i in range(len(flips)):
-                    reply.add_field(name="Flip " + str(i + 1),
-                                    value="Item: " + str(flips[i][0][0]) +
-                                          "\nBuying: " + ntos(flips[i][0][2]) +
-                                          "\nSelling: " + ntos(flips[i][0][3]) +
-                                          "\nProfit: " + ntos(flips[i][0][4]) +
-                                          "\nSelling Time: " + str(1 / max(flips[i][0][5], 0.0001)) + " min" +
-                                          "\n/ah " + requests.get(
-                                        "https://api.mojang.com/user/profiles/" + flips[i][0][1] + "/names").json()[-1][
-                                              "name"].replace("_", "\_"),
-                                    inline=False)
+                for i in range(15):
+                    if len(flips) > i:
+                        reply.add_field(name="Flip " + str(i + 1),
+                                        value="Item: " + str(flips.iloc[i].name) +
+                                              "\nBuying: " + ntos(flips.iloc[i].price) +
+                                              "\nSelling: " + ntos(flips.iloc[i].price_next) +
+                                              "\nProfit: " + ntos(flips.iloc[i].profit) +
+                                              "\n/viewauction " + str(flips.iloc[i].uuid),
+                                        inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
+                await message.reply("Done", mention_author=False)
             if cmd == 'af':
                 print("AUCTION FLIP CALLED")
                 await message.reply("Working on it", mention_author=False)
-                item_limit = 2
                 budget = 1000000
                 if len(ins) >= 2:
                     budget = ston(ins[1])
-                if len(ins) >= 3:
-                    item_limit = ston(ins[2])
-                flips = auction_flip(budget, item_limit)
+                flips = auction_flip(budget)
                 reply = discord.Embed(color=discord.Color.green())
                 for i in range(len(flips)):
                     reply.add_field(name="Flip " + str(i + 1),
                                     value="Item: " + str(flips[i][0][0]) +
                                           "\nBuying: " + ntos(flips[i][0][2]) +
                                           "\nSelling: " + ntos(flips[i][0][3]) +
-                                          "\nProfit: " + ntos(flips[i][0][4]) +
-                                          "\n/ah " + requests.get(
-                                        "https://api.mojang.com/user/profiles/" + flips[i][0][1] + "/names").json()[-1][
-                                              "name"],
+                                          "\nProfit: " + ntos(flips[i][1]) +
+                                          "\n/viewauction " + str(flips[i][0][1]),
                                     inline=False)
                 await MoneyMakingMaker.dm(message.author, reply)
             if cmd == 'bits':

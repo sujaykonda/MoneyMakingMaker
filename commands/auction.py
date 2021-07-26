@@ -10,8 +10,6 @@ import json
 import time
 from constants import *
 
-blacklist = {"ENCHANTED_BOOK", "PET", "RUNE", "NEW_YEAR_CAKE"}
-
 
 def process_json(json_data):
     auction_prices = {}
@@ -25,15 +23,17 @@ def process_json(json_data):
 
         if "bin" in auction:
             item_id = item_utils.to_skyblock_item_id(auction["item_bytes"])
-            if item_id not in bin_prices:
-                bin_prices[item_id] = {"price": float("inf"), "sellers": 0}
-            if bin_prices[item_id]["price"] > price:
-                bin_prices[item_id] = {"price": price, "sellers": bin_prices[item_id]["sellers"] + 1}
+            if not item_id.startswith("RECOMBOBED"):
+                if item_id not in bin_prices:
+                    bin_prices[item_id] = {"price": float("inf"), "sellers": 0}
+                if bin_prices[item_id]["price"] > price:
+                    bin_prices[item_id] = {"price": price, "sellers": bin_prices[item_id]["sellers"] + 1}
         elif time.time() * 1000 + 60000 >= auction["end"]:
             item_id = item_utils.to_skyblock_item_id(auction["item_bytes"])
-            if item_id not in auction_prices:
-                auction_prices[item_id] = []
-            auction_prices[item_id].append({"uuid": auction["uuid"], "price": price})
+            if not item_id.startswith("RECOMBOBED"):
+                if item_id not in auction_prices:
+                    auction_prices[item_id] = []
+                auction_prices[item_id].append({"uuid": auction["uuid"], "price": price})
 
     return auction_prices, bin_prices
 
@@ -62,7 +62,6 @@ def auction_flip(budget):
         for key in new_auction_prices.keys():
             if key in bin_prices and bin_prices[key]["sellers"] >= AUCTION_ITEM_LIMIT:
                 for auction in new_auction_prices[key]:
-                    print(auction["price"], bin_prices[key]["price"])
                     if auction["price"] < budget:
                         profit = bin_prices[key]["price"] * 0.99 - auction["price"]
                         best_flip[(key, auction["uuid"], auction["price"],

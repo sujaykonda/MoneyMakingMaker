@@ -12,11 +12,11 @@ def bazaar_flip(budget):
             buy_price = bazaar_data[product_id]["sell_summary"][0]["pricePerUnit"]
             sell_price = bazaar_data[product_id]["buy_summary"][0]["pricePerUnit"]
 
-            margin = sell_price - buy_price
+            margin = sell_price * 0.9875 - buy_price
             demand = bazaar_data[product_id]["quick_status"]["sellMovingWeek"]/7/24/60
-            demand *= (buy_price**0.5)/(sell_price**0.5)
+            demand *= (buy_price**0.3)/(sell_price**0.3)
             profit_per_min = margin * demand
-            profits[product_id] = profit_per_min
+            profits[(product_id, buy_price, sell_price, demand)] = profit_per_min
 
     counter = collections.Counter(profits)
 
