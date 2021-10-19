@@ -11,7 +11,7 @@ Usually its easier to just buy the gear, so you want a fast method to make money
 
 # MoneyMakingMaker
 
-### LINK: https://discord.gg/DYcPtcTc4T  
+### LINK: https://discord.gg/5fbHZFG5u4
 
 ## Flipping
 Flipping is buying things for low and then selling them for high to make profits.
